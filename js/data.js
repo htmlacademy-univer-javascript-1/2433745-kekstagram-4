@@ -1,110 +1,84 @@
-import { createRandom } from './util.js';
-import { getRandomNumber } from './util.js';
+import { getUniqueRandomId, getRandomInteger } from './utils.js';
 
-const messages = ['Всё отлично!',
-  'В целом всё неплохо. Но не всё.',
-  'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто
-непрофессионально.',
-  'Моя бабушка случайно чихнула с фотоаппаратом в руках и у неё получилась фотография лучше.',
-  'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась
-фотография лучше.',
-  'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой
-неудачный момент?!'
+export const NAMES = [
+  'Irishka220',
+  'MaxCool',
+  'Boris_Redwall',
+  'MiniCat',
+  'MariaBlog'
 ];
 
-const name = ['Вера', 'Коля', 'Андрей', 'Иван', 'Дима', 'Ольга', 'Максим', 'Олег', 'Ярополк'];
-
-const description = [
-  'Мои выходные',
-  'На прогулке с собакой',
-  'Это был худший день в моей жизни!',
-  'Сегодня радую вас красивой фотографией',
-  'Настроение пообщаться в комментариях',
-  'Просто фоточки)'
+export const MESSAGES = [
+  'Всё отлично!',
+  'В целом всё неплохо. Но не всё.',
+  'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.',
+  'Моя бабушка случайно чихнула с фотоаппаратом в руках и у неё получилась фотография лучше.',
+  'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.',
+  'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'
 ];
 
-const COUNT_PHOTO = 25;
+export const MAX_PHOTOS_COUNT = 25;
+export const MAX_HASHTAGS_COUNT = 5;
+export const MAX_DESCRIPTION_LENGTH = 140;
 
-const Id = {
+export const SCALE = {
+  MIN: 25,
+  MAX: 100
+};
+
+export const SCALE_STEP = 25;
+
+export const DEFAULT_SCALE = 100;
+
+export const IdNumber = {
   MIN: 1,
   MAX: 25
 };
 
-const Likes = {
-  MAX: 15,
-  MIN: 200
+export const LikesCount = {
+  MIN: 15,
+  MAX: 200
 };
 
-const Comments = {
+export const CommentsCount = {
   MIN: 0,
   MAX: 30
 };
 
-const Avatar = {
+export const AvatarNumber = {
   MIN: 1,
-  MAX: 6
+  MAX: 6,
 };
 
-const generate = createRandom(Id.MIN, Id.MAX);
+const usedId = [];
+const getId = () => getUniqueRandomId(IdNumber.MIN,IdNumber.MAX,usedId);
+const getLikes = () => getRandomInteger(LikesCount.MIN, LikesCount.MAX);
+const getComment = () => {
+  const comments = [];
+  const numComments = getRandomInteger(CommentsCount.MIN, CommentsCount.MAX);
+  for (let i = 0; i <= numComments - 1; i++) {
+    const comment = {
+      id: i,
+      avatar: `img/avatar-${getRandomInteger(AvatarNumber.MIN, AvatarNumber.MAX)}.svg`,
+      message: MESSAGES[getRandomInteger(0, MESSAGES.length-1)],
+      name:NAMES[getRandomInteger(0, NAMES.length-1)]
+    };
+    comments.push(comment);
+  }
 
-const createComment = () => ({
-  id: generate(),
-  avatar: `img/avatar-${getRandomNumber(Avatar.MIN, Avatar.MAX)}svg`,
-  message: messages[getRandomNumber(0, messages.length-1)],
-  name: name[getRandomNumber(0, name.length - 1)]
-});
-
-const createPhoto = () => ({
-  id: generate(),
-  url: `photos/${generate()}.jpg`,
-  description: description[getRandomNumber(0, description.length - 1)],
-  likes: getRandomNumber(Likes.MIN, Likes.MAX),
-  comments: Array.from({length: getRandomNumber(Comments.MIN, Comments.MAX)},
-createComment)
-});
-
-const getPhoto = () => Array.from({length: COUNT_PHOTO}, createPhoto);
-
-export {getPhoto};
-
-Далее, js/main.js удаляем все, вставляем это
- import {getPhoto} from './data.js';
-
-далее, в js/util.js вставляем это
-const getRandomNumber = (min, max) => {
-  const lower = Math.ceil(Math.min(min, max));
-  const upper = Math.floor(Math.max(min, max));
-  const result = Math.random() * (upper - lower + 1) + lower;
-
-  return Math.floor(result);
+  return comments;
 };
 
-const createRandom = (min, max) => {
-  const number = [];
-
-  return function () {
-    let currentValue = getRandomNumber(min, max);
-    while (number.includes(currentValue)) {
-      currentValue = getRandomNumber(min, max);
-    }
-    number.push(currentValue);
-    return currentValue;
+const generatePhotoDescription = () => {
+  const id = getId();
+  const photo = {
+    id: id,
+    url: `photos/${id}.jpg`,
+    description: 'Посмотрите, какую фотографию я сделал!',
+    likes: getLikes(),
+    comments: getComment()
   };
+
+  return photo;
 };
-
-const checkLenght = (inputString, maxLenght) => (inputString.length <= maxLenght);
-
-const isPalindrom = (inputString) => {
-  let reverseString = '';
-@@ -13,11 +30,6 @@ const isPalindrom = (inputString) => {
-  return (newString === reverseString);
-};
-
-const getCount = (inputParam) => {
-  const newString = inputParam.toString();
-  let number = '';
-@@ -29,11 +41,4 @@ const getCount = (inputParam) => {
-  return parseInt(number, 10);
-};
-
-export {getRandomNumber, createRandom, checkLenght, isPalindrom, getCount};
+export const getPhotoDescription = () => Array.from({length:MAX_PHOTOS_COUNT}, generatePhotoDescription);
