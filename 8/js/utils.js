@@ -30,4 +30,10 @@ const getUniqueRandomId = (min,max,array) => {
   return randomId;
 };
 
+export const onDocumentKeydown = (evt, closingFunc) => {
+  if (evt.key === 'Escape') {
+    closingFunc(evt);
+  }
+};
+
 export {getRandomInteger,getUniqueRandomId};
