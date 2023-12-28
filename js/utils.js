@@ -1,39 +1,25 @@
-const getRandomInteger = (min, max) => {
-  const lower = Math.ceil(Math.min(Math.abs(min), Math.abs(max)));
-  const upper = Math.floor(Math.max(Math.abs(min), Math.abs(max)));
-  const result = Math.random() * (upper - lower + 1) + lower;
+import { RANDOM_PICTURES_MAX} from './data.js';
 
-  return Math.floor(result);
-};
-
-const createRandomIdFromRangeGenerator = (min, max) => {
-  const previousValues = [];
-
-  return function () {
-    let currentValue = getRandomInteger(min, max);
-    while (previousValues.includes(currentValue)) {
-      currentValue = getRandomInteger(min, max);
-    }
-    previousValues.push(currentValue);
-    return currentValue;
-  };
-};
-
-const getUniqueRandomId = (min,max,array) => {
-  const getRandomId = createRandomIdFromRangeGenerator(min, max);
-  let randomId = getRandomId();
-  while (array.includes(randomId)) {
-    randomId = getRandomId();
-  }
-  array.push(randomId);
-
-  return randomId;
-};
-
-export const onDocumentKeydown = (evt, closingFunc) => {
+export const closeModal = (evt, closingFunc) => {
   if (evt.key === 'Escape') {
     closingFunc(evt);
   }
 };
 
-export {getRandomInteger,getUniqueRandomId};
+export const deleteMiniatures = () => document.querySelectorAll('.picture').forEach((photo) => photo.remove());
+
+export const debounce = (callback, timeoutDelay = 500) => {
+  let timeoutId;
+  return (...rest) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => callback.apply(this, rest), timeoutDelay);
+  };
+};
+
+const getRandomForSort = () =>  Math.random() - 0.5;
+
+export const mixArray = (array) => array.sort(getRandomForSort);
+
+export const sortDescending = (first, second) => second.comments.length - first.comments.length;
+
+export const sortRandom= (pictures) => mixArray(pictures.slice()).slice(0, RANDOM_PICTURES_MAX);
