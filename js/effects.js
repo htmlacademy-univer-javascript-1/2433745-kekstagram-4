@@ -120,11 +120,11 @@ const setEffect = (result) => {
   setImageStyle();
 };
 
-const resetEffect = () => setEffect(effect.DEFAULT);
-
 const onEffectsChange = (evt) => setEffect(evt.target.value);
 
 let sliderCreated = false;
+
+const resetEffect = () => setEffect(effect.DEFAULT);
 
 const initEffect = () => {
   if (!sliderCreated) {

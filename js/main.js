@@ -1,5 +1,5 @@
-import { drawMiniatures } from './draw-pictures.js';
-import { getPhotoDescription } from './data.js';
+import { loadData } from './api.js';
+import { onSuccess, onFail } from './draw-pictures.js';
+import './publication-submit.js';
 
-const renderedPhotos = getPhotoDescription();
-drawMiniatures(renderedPhotos);
+loadData(onSuccess, onFail);

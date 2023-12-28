@@ -1,10 +1,11 @@
+import { closeModal } from './utils.js';
+import { COMMENTS_STEP } from './data.js';
+
 const commentTemplate = document.querySelector('.social__comment');
 const commentsLoader = document.querySelector('.comments-loader');
 
 const onDocumentKeydown = (evt) => {
-  if (evt.key === 'Escape') {
-    closePicture(evt);
-  }
+  closeModal(evt, closePicture);
 };
 
 const showNextComments = () => {
@@ -12,7 +13,7 @@ const showNextComments = () => {
   let i = 0;
 
 
-  for (; i < 5; i++) {
+  for (; i < COMMENTS_STEP; i++) {
     if (currentComment === null) {
       commentsLoader.classList.add('hidden');
       break;
@@ -62,7 +63,7 @@ function openPopup(url, description, likes, comments) {
   openedPicture
     .querySelector('.big-picture__cancel')
     .addEventListener('click', closePicture);
-    document.addEventListener('keydown', onDocumentKeydown(closePicture));
+  document.addEventListener('keydown', onDocumentKeydown);
 
   openedPicture
     .querySelector('.social__comments-loader')
@@ -74,7 +75,7 @@ function closePicture(evt) {
   document.querySelector('.big-picture').classList.add('hidden');
   evt.target.removeEventListener('click', closePicture);
   document.removeEventListener('keydown', onDocumentKeydown);
-  document.removeEventListener('keydown', onDocumentKeydown(closePicture));
+  document.removeEventListener('keydown', onDocumentKeydown);
   document
     .querySelector('.social__comments-loader')
     .removeEventListener('click', showNextComments);
